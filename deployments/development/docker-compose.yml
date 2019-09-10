@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  api:
+    image: api_dev
+    build:
+      context: ../../
+      dockerfile: ./deployments/development/api/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../../:/api_dev
+    depends_on:
+      - db
+    environment:
+      MYSQL_DBNAME: api_dev
+      MYSQL_USER: api_dev
+      MYSQL_PASS: api_dev
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: api_dev
+      MYSQL_USER: api_dev
+      MYSQL_PASSWORD: api_dev
+      MYSQL_ROOT_PASSWORD: api_dev
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    volumes:
+      - api_dev_data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+volumes:
+  api_dev_data:
+    driver: local
+
